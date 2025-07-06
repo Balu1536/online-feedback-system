@@ -15,39 +15,63 @@ export const StudentDashboard = ({ userData, onLogout }: StudentDashboardProps) 
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState<any>(null);
 
-  // Mock data for subjects and feedback status
+  // Real data for subjects and feedback status - IV Semester
   const subjects = [
     {
       id: 1,
-      name: "Data Structures",
-      faculty: "Dr. Sarah Johnson",
-      code: "CS301",
+      name: "Operating Systems",
+      faculty: "Ms. Z. Shoba Rani",
+      code: "2305401",
       feedbackSubmitted: false,
-      semester: "Fall 2024"
+      semester: "IV Semester"
     },
     {
       id: 2,
-      name: "Database Systems",
-      faculty: "Prof. Michael Chen",
-      code: "CS401",
+      name: "Database Management Systems",
+      faculty: "Mr. Y. Prasada Reddy",
+      code: "2339402",
       feedbackSubmitted: true,
-      semester: "Fall 2024"
+      semester: "IV Semester"
     },
     {
       id: 3,
       name: "Software Engineering",
-      faculty: "Dr. Emily Rodriguez",
-      code: "CS402",
+      faculty: "Mr. A. Ramprakash Reddy",
+      code: "2305402",
       feedbackSubmitted: false,
-      semester: "Fall 2024"
+      semester: "IV Semester"
     },
     {
       id: 4,
-      name: "Computer Networks",
-      faculty: "Prof. David Wilson",
-      code: "CS403",
+      name: "Managerial Economics and Financial Analysis",
+      faculty: "Mr. K. Radha Krishna",
+      code: "23HS421",
+      feedbackSubmitted: false,
+      semester: "IV Semester"
+    },
+    {
+      id: 5,
+      name: "Probability and Statistics",
+      faculty: "Dr. G. Sreedhar",
+      code: "23HS402",
       feedbackSubmitted: true,
-      semester: "Fall 2024"
+      semester: "IV Semester"
+    },
+    {
+      id: 6,
+      name: "Full Stack Development – 1",
+      faculty: "Ms. B. Swetha",
+      code: "2305452",
+      feedbackSubmitted: false,
+      semester: "IV Semester"
+    },
+    {
+      id: 7,
+      name: "Design Thinking and Innovation",
+      faculty: "Dr. G. Suneel Kumar",
+      code: "2304453",
+      feedbackSubmitted: false,
+      semester: "IV Semester"
     }
   ];
 
@@ -151,7 +175,7 @@ export const StudentDashboard = ({ userData, onLogout }: StudentDashboardProps) 
         {/* Subjects List */}
         <Card className="shadow-card">
           <CardHeader>
-            <CardTitle>Your Subjects - Fall 2024</CardTitle>
+            <CardTitle>Your Subjects - IV Semester 2024-25</CardTitle>
             <CardDescription>
               Provide feedback for your faculty members
             </CardDescription>
