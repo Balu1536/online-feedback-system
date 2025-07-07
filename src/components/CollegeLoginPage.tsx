@@ -7,22 +7,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { GraduationCap, User, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-
 interface CollegeLoginPageProps {
   onLogin: (role: 'student' | 'faculty' | 'admin', userData: any) => void;
 }
-
-export const CollegeLoginPage = ({ onLogin }: CollegeLoginPageProps) => {
+export const CollegeLoginPage = ({
+  onLogin
+}: CollegeLoginPageProps) => {
   const [collegeEmail, setCollegeEmail] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [rollNumber, setRollNumber] = useState('');
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('dob');
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   const handleStudentLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!collegeEmail) {
       toast({
         title: "Missing Information",
@@ -31,7 +31,6 @@ export const CollegeLoginPage = ({ onLogin }: CollegeLoginPageProps) => {
       });
       return;
     }
-
     if (activeTab === 'dob' && !dateOfBirth) {
       toast({
         title: "Missing Information",
@@ -40,7 +39,6 @@ export const CollegeLoginPage = ({ onLogin }: CollegeLoginPageProps) => {
       });
       return;
     }
-
     if (activeTab === 'roll' && !rollNumber) {
       toast({
         title: "Missing Information",
@@ -49,21 +47,23 @@ export const CollegeLoginPage = ({ onLogin }: CollegeLoginPageProps) => {
       });
       return;
     }
-
     setLoading(true);
-    
     try {
       // Verify student credentials
-      const { data: verificationResult, error: verifyError } = await supabase
-        .rpc('verify_student_credentials', {
-          p_college_email: collegeEmail,
-          ...(activeTab === 'dob' ? { p_date_of_birth: dateOfBirth } : { p_roll_number: rollNumber })
-        });
-
+      const {
+        data: verificationResult,
+        error: verifyError
+      } = await supabase.rpc('verify_student_credentials', {
+        p_college_email: collegeEmail,
+        ...(activeTab === 'dob' ? {
+          p_date_of_birth: dateOfBirth
+        } : {
+          p_roll_number: rollNumber
+        })
+      });
       if (verifyError) {
         throw verifyError;
       }
-
       if (!verificationResult || verificationResult.length === 0 || !verificationResult[0].is_valid) {
         toast({
           title: "Invalid Credentials",
@@ -73,13 +73,16 @@ export const CollegeLoginPage = ({ onLogin }: CollegeLoginPageProps) => {
         setLoading(false);
         return;
       }
-
       const studentData = verificationResult[0].student_data as any;
-      
+
       // Sign up/Sign in with Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      const {
+        data: authData,
+        error: authError
+      } = await supabase.auth.signUp({
         email: collegeEmail,
-        password: studentData.roll_number + studentData.date_of_birth, // Use roll number + DOB as password
+        password: studentData.roll_number + studentData.date_of_birth,
+        // Use roll number + DOB as password
         options: {
           emailRedirectTo: `${window.location.origin}/`,
           data: {
@@ -88,28 +91,27 @@ export const CollegeLoginPage = ({ onLogin }: CollegeLoginPageProps) => {
           }
         }
       });
-
       if (authError && authError.message !== "User already registered") {
         throw authError;
       }
 
       // If user already exists, try to sign in
       if (authError?.message === "User already registered") {
-        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        const {
+          data: signInData,
+          error: signInError
+        } = await supabase.auth.signInWithPassword({
           email: collegeEmail,
           password: studentData.roll_number + studentData.date_of_birth
         });
-
         if (signInError) {
           throw signInError;
         }
       }
-
       toast({
         title: "Login Successful",
         description: `Welcome, ${studentData.name}!`
       });
-
       onLogin('student', {
         id: studentData.id,
         name: studentData.name,
@@ -117,7 +119,6 @@ export const CollegeLoginPage = ({ onLogin }: CollegeLoginPageProps) => {
         section: studentData.section,
         role: 'student'
       });
-
     } catch (error: any) {
       console.error('Login error:', error);
       toast({
@@ -129,10 +130,9 @@ export const CollegeLoginPage = ({ onLogin }: CollegeLoginPageProps) => {
       setLoading(false);
     }
   };
-
   const handleFacultyLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // For now, use simple faculty login
     const facultyData = {
       id: 'faculty-1',
@@ -140,18 +140,15 @@ export const CollegeLoginPage = ({ onLogin }: CollegeLoginPageProps) => {
       role: 'faculty',
       department: 'Computer Science'
     };
-    
     onLogin('faculty', facultyData);
-    
     toast({
       title: "Faculty Login Successful",
       description: `Welcome, ${facultyData.name}!`
     });
   };
-
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // For now, use simple admin login
     const adminData = {
       id: 'admin-1',
@@ -159,23 +156,19 @@ export const CollegeLoginPage = ({ onLogin }: CollegeLoginPageProps) => {
       role: 'admin',
       department: 'Administration'
     };
-    
     onLogin('admin', adminData);
-    
     toast({
       title: "Admin Login Successful",
       description: `Welcome, ${adminData.name}!`
     });
   };
-
-  return (
-    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+  return <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl mb-4 shadow-elegant">
             <GraduationCap className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Student Voice</h1>
+          <h1 className="text-3xl text-white mb-2 font-bold">Online Feedback System</h1>
           <p className="text-white/80">Faculty Feedback System</p>
         </div>
 
@@ -207,14 +200,7 @@ export const CollegeLoginPage = ({ onLogin }: CollegeLoginPageProps) => {
                 <form onSubmit={handleStudentLogin} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="collegeEmail">College Email ID</Label>
-                    <Input
-                      id="collegeEmail"
-                      type="email"
-                      placeholder="e.g., 239Y1A0501@ksrmce.ac.in"
-                      value={collegeEmail}
-                      onChange={(e) => setCollegeEmail(e.target.value)}
-                      required
-                    />
+                    <Input id="collegeEmail" type="email" placeholder="e.g., 239Y1A0501@ksrmce.ac.in" value={collegeEmail} onChange={e => setCollegeEmail(e.target.value)} required />
                   </div>
 
                   <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -231,33 +217,16 @@ export const CollegeLoginPage = ({ onLogin }: CollegeLoginPageProps) => {
                     
                     <TabsContent value="dob" className="space-y-2">
                       <Label htmlFor="dateOfBirth">Date of Birth</Label>
-                      <Input
-                        id="dateOfBirth"
-                        type="date"
-                        value={dateOfBirth}
-                        onChange={(e) => setDateOfBirth(e.target.value)}
-                        required
-                      />
+                      <Input id="dateOfBirth" type="date" value={dateOfBirth} onChange={e => setDateOfBirth(e.target.value)} required />
                     </TabsContent>
                     
                     <TabsContent value="roll" className="space-y-2">
                       <Label htmlFor="rollNumber">Roll Number</Label>
-                      <Input
-                        id="rollNumber"
-                        type="text"
-                        placeholder="e.g., 239Y1A0501"
-                        value={rollNumber}
-                        onChange={(e) => setRollNumber(e.target.value)}
-                        required
-                      />
+                      <Input id="rollNumber" type="text" placeholder="e.g., 239Y1A0501" value={rollNumber} onChange={e => setRollNumber(e.target.value)} required />
                     </TabsContent>
                   </Tabs>
 
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-gradient-primary hover:shadow-button transition-all duration-300"
-                    disabled={loading}
-                  >
+                  <Button type="submit" className="w-full bg-gradient-primary hover:shadow-button transition-all duration-300" disabled={loading}>
                     {loading ? 'Signing in...' : 'Sign In as Student'}
                   </Button>
                 </form>
@@ -267,26 +236,13 @@ export const CollegeLoginPage = ({ onLogin }: CollegeLoginPageProps) => {
                 <form onSubmit={handleFacultyLogin} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="facultyId">Faculty ID</Label>
-                    <Input
-                      id="facultyId"
-                      type="text"
-                      placeholder="Enter your faculty ID"
-                      required
-                    />
+                    <Input id="facultyId" type="text" placeholder="Enter your faculty ID" required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="facultyPassword">Password</Label>
-                    <Input
-                      id="facultyPassword"
-                      type="password"
-                      placeholder="Enter your password"
-                      required
-                    />
+                    <Input id="facultyPassword" type="password" placeholder="Enter your password" required />
                   </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-gradient-primary hover:shadow-button transition-all duration-300"
-                  >
+                  <Button type="submit" className="w-full bg-gradient-primary hover:shadow-button transition-all duration-300">
                     Sign In as Faculty
                   </Button>
                 </form>
@@ -296,26 +252,13 @@ export const CollegeLoginPage = ({ onLogin }: CollegeLoginPageProps) => {
                 <form onSubmit={handleAdminLogin} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="adminId">Admin ID</Label>
-                    <Input
-                      id="adminId"
-                      type="text"
-                      placeholder="Enter your admin ID"
-                      required
-                    />
+                    <Input id="adminId" type="text" placeholder="Enter your admin ID" required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="adminPassword">Password</Label>
-                    <Input
-                      id="adminPassword"
-                      type="password"
-                      placeholder="Enter your password"
-                      required
-                    />
+                    <Input id="adminPassword" type="password" placeholder="Enter your password" required />
                   </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-gradient-primary hover:shadow-button transition-all duration-300"
-                  >
+                  <Button type="submit" className="w-full bg-gradient-primary hover:shadow-button transition-all duration-300">
                     Sign In as Admin
                   </Button>
                 </form>
@@ -329,6 +272,5 @@ export const CollegeLoginPage = ({ onLogin }: CollegeLoginPageProps) => {
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
+    </div>;
 };
