@@ -14,66 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
+      faculty: {
+        Row: {
+          created_at: string
+          designation: string
+          experience: string
+          faculty_id: string
+          id: string
+          name: string
+          qualification: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          designation: string
+          experience: string
+          faculty_id: string
+          id?: string
+          name: string
+          qualification: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          designation?: string
+          experience?: string
+          faculty_id?: string
+          id?: string
+          name?: string
+          qualification?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
-          aadhar_card: string | null
           college_email: string
           created_at: string
           date_of_birth: string
           gender: string | null
-          id: string
           inter_cgpa: string | null
-          mobile_parents: string | null
           mobile_primary: string | null
           mobile_secondary: string | null
           name: string
-          pan_card: string | null
-          personal_email: string | null
           roll_number: string
           section: string | null
           ssc_cgpa: string | null
           updated_at: string
-          user_id: string
         }
         Insert: {
-          aadhar_card?: string | null
           college_email: string
           created_at?: string
           date_of_birth: string
           gender?: string | null
-          id?: string
           inter_cgpa?: string | null
-          mobile_parents?: string | null
           mobile_primary?: string | null
           mobile_secondary?: string | null
           name: string
-          pan_card?: string | null
-          personal_email?: string | null
           roll_number: string
           section?: string | null
           ssc_cgpa?: string | null
           updated_at?: string
-          user_id: string
         }
         Update: {
-          aadhar_card?: string | null
           college_email?: string
           created_at?: string
           date_of_birth?: string
           gender?: string | null
-          id?: string
           inter_cgpa?: string | null
-          mobile_parents?: string | null
           mobile_primary?: string | null
           mobile_secondary?: string | null
           name?: string
-          pan_card?: string | null
-          personal_email?: string | null
           roll_number?: string
           section?: string | null
           ssc_cgpa?: string | null
           updated_at?: string
-          user_id?: string
         }
         Relationships: []
       }
