@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      admins: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          password_hash: string
+          role: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          password_hash: string
+          role?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          password_hash?: string
+          role?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       faculty: {
         Row: {
           created_at: string
@@ -46,6 +76,74 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      feedback: {
+        Row: {
+          academic_year: string
+          additional_comments: string | null
+          communication_skills: number | null
+          course_content: number | null
+          faculty_id: string
+          id: string
+          is_anonymous: boolean | null
+          overall_rating: number | null
+          positive_feedback: string | null
+          punctuality: number | null
+          semester: string
+          student_id: string
+          student_interaction: number | null
+          subject_name: string
+          submitted_at: string
+          suggestions_for_improvement: string | null
+          teaching_effectiveness: number | null
+        }
+        Insert: {
+          academic_year: string
+          additional_comments?: string | null
+          communication_skills?: number | null
+          course_content?: number | null
+          faculty_id: string
+          id?: string
+          is_anonymous?: boolean | null
+          overall_rating?: number | null
+          positive_feedback?: string | null
+          punctuality?: number | null
+          semester: string
+          student_id: string
+          student_interaction?: number | null
+          subject_name: string
+          submitted_at?: string
+          suggestions_for_improvement?: string | null
+          teaching_effectiveness?: number | null
+        }
+        Update: {
+          academic_year?: string
+          additional_comments?: string | null
+          communication_skills?: number | null
+          course_content?: number | null
+          faculty_id?: string
+          id?: string
+          is_anonymous?: boolean | null
+          overall_rating?: number | null
+          positive_feedback?: string | null
+          punctuality?: number | null
+          semester?: string
+          student_id?: string
+          student_interaction?: number | null
+          subject_name?: string
+          submitted_at?: string
+          suggestions_for_improvement?: string | null
+          teaching_effectiveness?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_faculty_id_fkey"
+            columns: ["faculty_id"]
+            isOneToOne: false
+            referencedRelation: "faculty"
+            referencedColumns: ["faculty_id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -97,6 +195,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_feedback_analytics: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      verify_admin_credentials: {
+        Args: { p_email: string; p_password: string }
+        Returns: {
+          is_valid: boolean
+          admin_data: Json
+        }[]
+      }
       verify_student_credentials: {
         Args: {
           p_college_email: string

@@ -148,19 +148,65 @@ export const CollegeLoginPage = ({
   };
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const formData = new FormData(e.target as HTMLFormElement);
+    const email = formData.get('adminEmail') as string;
+    const password = formData.get('adminPassword') as string;
 
-    // For now, use simple admin login
-    const adminData = {
-      id: 'admin-1',
-      name: 'System Administrator',
-      role: 'admin',
-      department: 'Administration'
-    };
-    onLogin('admin', adminData);
-    toast({
-      title: "Admin Login Successful",
-      description: `Welcome, ${adminData.name}!`
-    });
+    if (!email || !password) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter both email and password",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Verify admin credentials
+      const { data: verificationResult, error: verifyError } = await supabase.rpc('verify_admin_credentials', {
+        p_email: email,
+        p_password: password
+      });
+
+      if (verifyError) {
+        throw verifyError;
+      }
+
+      if (!verificationResult || verificationResult.length === 0 || !verificationResult[0].is_valid) {
+        toast({
+          title: "Invalid Credentials",
+          description: "Please check your email and password",
+          variant: "destructive"
+        });
+        setLoading(false);
+        return;
+      }
+
+      const adminData = verificationResult[0].admin_data as any;
+
+      toast({
+        title: "Admin Login Successful",
+        description: `Welcome, ${adminData.name}!`
+      });
+      
+      onLogin('admin', {
+        id: adminData.id,
+        name: adminData.name,
+        email: adminData.email,
+        role: 'admin'
+      });
+    } catch (error: any) {
+      console.error('Admin login error:', error);
+      toast({
+        title: "Login Failed",
+        description: error.message || "Please try again",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
   return <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -251,15 +297,31 @@ export const CollegeLoginPage = ({
               <TabsContent value="admin">
                 <form onSubmit={handleAdminLogin} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="adminId">Admin ID</Label>
-                    <Input id="adminId" type="text" placeholder="Enter your admin ID" required />
+                    <Label htmlFor="adminEmail">Admin Email</Label>
+                    <Input 
+                      id="adminEmail" 
+                      name="adminEmail"
+                      type="email" 
+                      placeholder="Enter your admin email" 
+                      required 
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="adminPassword">Password</Label>
-                    <Input id="adminPassword" type="password" placeholder="Enter your password" required />
+                    <Input 
+                      id="adminPassword" 
+                      name="adminPassword"
+                      type="password" 
+                      placeholder="Enter your password" 
+                      required 
+                    />
                   </div>
-                  <Button type="submit" className="w-full bg-gradient-primary hover:shadow-button transition-all duration-300">
-                    Sign In as Admin
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-gradient-primary hover:shadow-button transition-all duration-300"
+                    disabled={loading}
+                  >
+                    {loading ? 'Signing in...' : 'Sign In as Admin'}
                   </Button>
                 </form>
               </TabsContent>
@@ -268,6 +330,7 @@ export const CollegeLoginPage = ({
             <div className="mt-6 text-center text-sm text-muted-foreground">
               <p>Students: Use your college email and date of birth/roll number</p>
               <p>Demo Student: 239Y1A0501@ksrmce.ac.in | DOB: 2005-04-11</p>
+              <p>Admin: balasubramanyam200517@gmail.com | Password: 15082005</p>
             </div>
           </CardContent>
         </Card>
