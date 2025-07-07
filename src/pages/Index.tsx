@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LoginPage } from "@/components/LoginPage";
+import { CollegeLoginPage } from "@/components/CollegeLoginPage";
 import { StudentDashboard } from "@/components/StudentDashboard";
 import { FacultyDashboard } from "@/components/FacultyDashboard";
 import { AdminDashboard } from "@/components/AdminDashboard";
@@ -19,7 +19,7 @@ const Index = () => {
   };
 
   if (!currentUser.role) {
-    return <LoginPage onLogin={handleLogin} />;
+    return <CollegeLoginPage onLogin={handleLogin} />;
   }
 
   switch (currentUser.role) {
@@ -30,7 +30,7 @@ const Index = () => {
     case 'admin':
       return <AdminDashboard userData={currentUser.userData} onLogout={handleLogout} />;
     default:
-      return <LoginPage onLogin={handleLogin} />;
+      return <CollegeLoginPage onLogin={handleLogin} />;
   }
 };
 

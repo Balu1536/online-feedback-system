@@ -14,13 +14,85 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          aadhar_card: string | null
+          college_email: string
+          created_at: string
+          date_of_birth: string
+          gender: string | null
+          id: string
+          inter_cgpa: string | null
+          mobile_parents: string | null
+          mobile_primary: string | null
+          mobile_secondary: string | null
+          name: string
+          pan_card: string | null
+          personal_email: string | null
+          roll_number: string
+          section: string | null
+          ssc_cgpa: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          aadhar_card?: string | null
+          college_email: string
+          created_at?: string
+          date_of_birth: string
+          gender?: string | null
+          id?: string
+          inter_cgpa?: string | null
+          mobile_parents?: string | null
+          mobile_primary?: string | null
+          mobile_secondary?: string | null
+          name: string
+          pan_card?: string | null
+          personal_email?: string | null
+          roll_number: string
+          section?: string | null
+          ssc_cgpa?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          aadhar_card?: string | null
+          college_email?: string
+          created_at?: string
+          date_of_birth?: string
+          gender?: string | null
+          id?: string
+          inter_cgpa?: string | null
+          mobile_parents?: string | null
+          mobile_primary?: string | null
+          mobile_secondary?: string | null
+          name?: string
+          pan_card?: string | null
+          personal_email?: string | null
+          roll_number?: string
+          section?: string | null
+          ssc_cgpa?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      verify_student_credentials: {
+        Args: {
+          p_college_email: string
+          p_date_of_birth?: string
+          p_roll_number?: string
+        }
+        Returns: {
+          is_valid: boolean
+          student_data: Json
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
