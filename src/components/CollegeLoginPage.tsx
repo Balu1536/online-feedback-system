@@ -148,11 +148,9 @@ export const CollegeLoginPage = ({
   };
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     const formData = new FormData(e.target as HTMLFormElement);
     const email = formData.get('adminEmail') as string;
     const password = formData.get('adminPassword') as string;
-
     if (!email || !password) {
       toast({
         title: "Missing Information",
@@ -161,19 +159,19 @@ export const CollegeLoginPage = ({
       });
       return;
     }
-
     setLoading(true);
     try {
       // Verify admin credentials
-      const { data: verificationResult, error: verifyError } = await supabase.rpc('verify_admin_credentials', {
+      const {
+        data: verificationResult,
+        error: verifyError
+      } = await supabase.rpc('verify_admin_credentials', {
         p_email: email,
         p_password: password
       });
-
       if (verifyError) {
         throw verifyError;
       }
-
       if (!verificationResult || verificationResult.length === 0 || !verificationResult[0].is_valid) {
         toast({
           title: "Invalid Credentials",
@@ -183,14 +181,11 @@ export const CollegeLoginPage = ({
         setLoading(false);
         return;
       }
-
       const adminData = verificationResult[0].admin_data as any;
-
       toast({
         title: "Admin Login Successful",
         description: `Welcome, ${adminData.name}!`
       });
-      
       onLogin('admin', {
         id: adminData.id,
         name: adminData.name,
@@ -298,29 +293,13 @@ export const CollegeLoginPage = ({
                 <form onSubmit={handleAdminLogin} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="adminEmail">Admin Email</Label>
-                    <Input 
-                      id="adminEmail" 
-                      name="adminEmail"
-                      type="email" 
-                      placeholder="Enter your admin email" 
-                      required 
-                    />
+                    <Input id="adminEmail" name="adminEmail" type="email" placeholder="Enter your admin email" required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="adminPassword">Password</Label>
-                    <Input 
-                      id="adminPassword" 
-                      name="adminPassword"
-                      type="password" 
-                      placeholder="Enter your password" 
-                      required 
-                    />
+                    <Input id="adminPassword" name="adminPassword" type="password" placeholder="Enter your password" required />
                   </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-gradient-primary hover:shadow-button transition-all duration-300"
-                    disabled={loading}
-                  >
+                  <Button type="submit" className="w-full bg-gradient-primary hover:shadow-button transition-all duration-300" disabled={loading}>
                     {loading ? 'Signing in...' : 'Sign In as Admin'}
                   </Button>
                 </form>
@@ -330,7 +309,8 @@ export const CollegeLoginPage = ({
             <div className="mt-6 text-center text-sm text-muted-foreground">
               <p>Students: Use your college email and date of birth/roll number</p>
               <p>Demo Student: 239Y1A0501@ksrmce.ac.in | DOB: 2005-04-11</p>
-              <p>Admin: balasubramanyam200517@gmail.com | Password: 15082005</p>
+              <p>
+            </p>
             </div>
           </CardContent>
         </Card>
