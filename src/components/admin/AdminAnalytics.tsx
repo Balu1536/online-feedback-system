@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend } from 'recharts';
-import { TrendingUp, TrendingDown, Award, AlertCircle } from "lucide-react";
+import { TrendingUp, TrendingDown, Award, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 interface AdminAnalyticsProps {
   analytics: any;
@@ -58,7 +58,7 @@ export const AdminAnalytics = ({
                 <p className="text-lg font-bold text-warning">{lowPerformer?.faculty_name}</p>
                 <p className="text-sm text-muted-foreground">9/10</p>
               </div>
-              <AlertCircle className="h-8 w-8 text-warning" />
+              <CheckCircle className="h-8 w-8 text-success" />
             </div>
           </CardContent>
         </Card>
