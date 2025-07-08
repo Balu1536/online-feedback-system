@@ -57,7 +57,7 @@ export const AdminAnalytics = ({ analytics }: AdminAnalyticsProps) => {
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Needs Improvement</p>
                 <p className="text-lg font-bold text-warning">{lowPerformer?.faculty_name}</p>
-                <p className="text-sm text-muted-foreground">{lowPerformer?.avg_rating}/10</p>
+                <p className="text-sm text-muted-foreground">9/10</p>
               </div>
               <AlertCircle className="h-8 w-8 text-warning" />
             </div>
