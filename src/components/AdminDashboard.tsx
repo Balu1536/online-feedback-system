@@ -9,6 +9,7 @@ import { AdminAnalytics } from "./admin/AdminAnalytics";
 import { AdminFacultyManagement } from "./admin/AdminFacultyManagement";
 import { AdminFeedbackReview } from "./admin/AdminFeedbackReview";
 import { AdminReports } from "./admin/AdminReports";
+import { AdminCourseManagement } from "./admin/AdminCourseManagement";
 import { AdminSettings } from "./admin/AdminSettings";
 
 interface AdminDashboardProps {
@@ -143,10 +144,11 @@ export const AdminDashboard = ({ userData, onLogout }: AdminDashboardProps) => {
         <AdminOverviewCards analytics={analytics} facultyCount={faculty.length} />
 
         <Tabs defaultValue="analytics" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="faculty">Faculty Management</TabsTrigger>
-            <TabsTrigger value="feedback">Feedback Review</TabsTrigger>
+            <TabsTrigger value="faculty">Faculty</TabsTrigger>
+            <TabsTrigger value="courses">Courses</TabsTrigger>
+            <TabsTrigger value="feedback">Feedback</TabsTrigger>
             <TabsTrigger value="reports">Reports</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
@@ -157,6 +159,10 @@ export const AdminDashboard = ({ userData, onLogout }: AdminDashboardProps) => {
 
           <TabsContent value="faculty" className="space-y-6">
             <AdminFacultyManagement faculty={faculty} onReloadData={loadData} />
+          </TabsContent>
+
+          <TabsContent value="courses" className="space-y-6">
+            <AdminCourseManagement />
           </TabsContent>
 
           <TabsContent value="feedback" className="space-y-6">

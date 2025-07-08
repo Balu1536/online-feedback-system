@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { GraduationCap, BookOpen, CheckCircle, Clock } from "lucide-react";
-import { FeedbackForm } from "./FeedbackForm";
+import { FeedbackFormV2 } from "./FeedbackFormV2";
 
 interface StudentDashboardProps {
   userData: any;
@@ -89,14 +89,8 @@ export const StudentDashboard = ({ userData, onLogout }: StudentDashboardProps) 
     // In a real app, you would update the subject's feedback status
   };
 
-  if (showFeedbackForm && selectedSubject) {
-    return (
-      <FeedbackForm 
-        subject={selectedSubject}
-        onSubmit={handleFeedbackSubmitted}
-        onCancel={() => setShowFeedbackForm(false)}
-      />
-    );
+  if (showFeedbackForm) {
+    return <FeedbackFormV2 userData={userData} onBack={() => setShowFeedbackForm(false)} />;
   }
 
   return (

@@ -44,6 +44,78 @@ export type Database = {
         }
         Relationships: []
       }
+      course_assignments: {
+        Row: {
+          academic_year: string
+          course_id: string
+          created_at: string
+          faculty_id: string
+          id: string
+          section: string
+          semester: string
+          updated_at: string
+        }
+        Insert: {
+          academic_year?: string
+          course_id: string
+          created_at?: string
+          faculty_id: string
+          id?: string
+          section: string
+          semester?: string
+          updated_at?: string
+        }
+        Update: {
+          academic_year?: string
+          course_id?: string
+          created_at?: string
+          faculty_id?: string
+          id?: string
+          section?: string
+          semester?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_assignments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["course_id"]
+          },
+          {
+            foreignKeyName: "course_assignments_faculty_id_fkey"
+            columns: ["faculty_id"]
+            isOneToOne: false
+            referencedRelation: "faculty"
+            referencedColumns: ["faculty_id"]
+          },
+        ]
+      }
+      courses: {
+        Row: {
+          course_id: string
+          course_name: string
+          created_at: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          course_id: string
+          course_name: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          course_id?: string
+          course_name?: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       faculty: {
         Row: {
           created_at: string
