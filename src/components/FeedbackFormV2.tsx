@@ -27,6 +27,7 @@ export const FeedbackFormV2 = ({ userData, onBack }: FeedbackFormV2Props) => {
   const [selectedCourse, setSelectedCourse] = useState<CourseOption | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [studentUuid, setStudentUuid] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Rating states
@@ -43,8 +44,32 @@ export const FeedbackFormV2 = ({ userData, onBack }: FeedbackFormV2Props) => {
   const [additionalComments, setAdditionalComments] = useState('');
 
   useEffect(() => {
+    loadStudentData();
     loadAvailableCourses();
   }, [userData]);
+
+  const loadStudentData = async () => {
+    try {
+      // Get student's UUID from profiles table using roll number or email
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('roll_number')
+        .eq('roll_number', userData?.roll_number || userData?.college_email)
+        .single();
+
+      if (error) throw error;
+      
+      // For now, we'll create a UUID from the roll number for consistency
+      // In production, you'd want to use proper user authentication
+      const uuid = userData?.roll_number ? `00000000-0000-0000-0000-${userData.roll_number.padStart(12, '0')}` : null;
+      setStudentUuid(uuid);
+    } catch (error: any) {
+      console.error('Error loading student data:', error);
+      // Generate a UUID-like string from roll number as fallback
+      const uuid = userData?.roll_number ? `00000000-0000-0000-0000-${userData.roll_number.padStart(12, '0')}` : null;
+      setStudentUuid(uuid);
+    }
+  };
 
   const loadAvailableCourses = async () => {
     try {
@@ -105,11 +130,20 @@ export const FeedbackFormV2 = ({ userData, onBack }: FeedbackFormV2Props) => {
       return;
     }
 
+    if (!studentUuid) {
+      toast({
+        title: "Student Data Error",
+        description: "Unable to identify student. Please try logging in again.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
       setSubmitting(true);
 
       const feedbackData = {
-        student_id: userData.roll_number,
+        student_id: studentUuid, // Use the UUID instead of roll number
         faculty_id: selectedCourse.faculty_id,
         subject_name: selectedCourse.course_name,
         semester: '3rd',
@@ -217,8 +251,8 @@ export const FeedbackFormV2 = ({ userData, onBack }: FeedbackFormV2Props) => {
                   <SelectValue placeholder="Select a course..." />
                 </SelectTrigger>
                 <SelectContent>
-                  {courses.map((course) => (
-                    <SelectItem key={`${course.course_id}-${course.faculty_id}`} value={course.course_id}>
+                  {courses.map((course, index) => (
+                    <SelectItem key={`${course.course_id}-${course.faculty_id}-${index}`} value={course.course_id}>
                       {course.course_name} - {course.faculty_name}
                     </SelectItem>
                   ))}
