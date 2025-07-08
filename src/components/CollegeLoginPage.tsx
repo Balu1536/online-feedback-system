@@ -308,12 +308,12 @@ export const CollegeLoginPage = ({
 
             <div className="mt-6 text-center text-sm text-muted-foreground">
               <p>Students: Use your college email and date of birth/roll number</p>
-              <p>Demo Student: 239Y1A0501@ksrmce.ac.in | DOB: 2005-04-11</p>
-              <p>
-            </p>
+              <p>Demo Student: 239Y1A0536@ksrmce.ac.in | DOB: 2005-04-11</p>
+              <p>Demo Admin: balasubramanyam200517@gmail.com | Password: admin123</p>
             </div>
           </CardContent>
         </Card>
       </div>
-    </div>;
+    </div>
+  );
 };

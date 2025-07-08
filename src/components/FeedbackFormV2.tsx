@@ -50,24 +50,31 @@ export const FeedbackFormV2 = ({ userData, onBack }: FeedbackFormV2Props) => {
 
   const loadStudentData = async () => {
     try {
-      // Get student's UUID from profiles table using roll number or email
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('roll_number')
-        .eq('roll_number', userData?.roll_number || userData?.college_email)
-        .single();
-
-      if (error) throw error;
-      
-      // For now, we'll create a UUID from the roll number for consistency
-      // In production, you'd want to use proper user authentication
-      const uuid = userData?.roll_number ? `00000000-0000-0000-0000-${userData.roll_number.padStart(12, '0')}` : null;
-      setStudentUuid(uuid);
+      // For the feedback system, we'll use the authenticated user's session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.id) {
+        setStudentUuid(session.user.id);
+      } else {
+        // Fallback: create a consistent UUID from roll number for testing
+        if (userData?.roll_number) {
+          // Create a proper UUID v4 format using roll number as seed
+          const rollPadded = userData.roll_number.toLowerCase().padStart(32, '0');
+          const uuid = `${rollPadded.slice(0, 8)}-${rollPadded.slice(8, 12)}-4${rollPadded.slice(12, 15)}-8${rollPadded.slice(15, 18)}-${rollPadded.slice(18, 30)}`;
+          setStudentUuid(uuid);
+        } else {
+          setStudentUuid(crypto.randomUUID());
+        }
+      }
     } catch (error: any) {
       console.error('Error loading student data:', error);
-      // Generate a UUID-like string from roll number as fallback
-      const uuid = userData?.roll_number ? `00000000-0000-0000-0000-${userData.roll_number.padStart(12, '0')}` : null;
-      setStudentUuid(uuid);
+      // Generate a consistent UUID-like string from roll number as fallback
+      if (userData?.roll_number) {
+        const rollPadded = userData.roll_number.toLowerCase().padStart(32, '0');
+        const uuid = `${rollPadded.slice(0, 8)}-${rollPadded.slice(8, 12)}-4${rollPadded.slice(12, 15)}-8${rollPadded.slice(15, 18)}-${rollPadded.slice(18, 30)}`;
+        setStudentUuid(uuid);
+      } else {
+        setStudentUuid(crypto.randomUUID());
+      }
     }
   };
 
