@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Eye, Filter, Download, Star } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface AdminFeedbackReviewProps {
   feedback: any[];
@@ -16,6 +17,7 @@ export const AdminFeedbackReview = ({ feedback }: AdminFeedbackReviewProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [ratingFilter, setRatingFilter] = useState('all');
   const [semesterFilter, setSemesterFilter] = useState('all');
+  const { toast } = useToast();
 
   const filteredFeedback = feedback.filter(item => {
     const matchesSearch = item.subject_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -41,6 +43,46 @@ export const AdminFeedbackReview = ({ feedback }: AdminFeedbackReviewProps) => {
     return 'bg-destructive';
   };
 
+  const handleExportFilteredFeedback = () => {
+    const exportData = filteredFeedback.map(item => ({
+      subject: item.subject_name,
+      faculty: item.faculty?.name || 'Unknown',
+      semester: item.semester,
+      academic_year: item.academic_year,
+      overall_rating: item.overall_rating,
+      teaching_effectiveness: item.teaching_effectiveness,
+      course_content: item.course_content,
+      communication_skills: item.communication_skills,
+      punctuality: item.punctuality,
+      student_interaction: item.student_interaction,
+      positive_feedback: item.positive_feedback,
+      suggestions: item.suggestions_for_improvement,
+      additional_comments: item.additional_comments,
+      submitted_at: item.submitted_at,
+      is_anonymous: item.is_anonymous
+    }));
+
+    const csvContent = [
+      Object.keys(exportData[0] || {}).join(','),
+      ...exportData.map(row => Object.values(row).map(val => `"${val || ''}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `filtered-feedback-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "Export Complete",
+      description: `Exported ${filteredFeedback.length} feedback records.`
+    });
+  };
+
   return (
     <div className="space-y-6">
       {/* Filters */}
@@ -51,7 +93,11 @@ export const AdminFeedbackReview = ({ feedback }: AdminFeedbackReviewProps) => {
               <CardTitle>Feedback Review & Management</CardTitle>
               <CardDescription>Review, filter, and analyze student feedback submissions</CardDescription>
             </div>
-            <Button variant="outline" className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2"
+              onClick={() => handleExportFilteredFeedback()}
+            >
               <Download className="w-4 h-4" />
               Export Filtered
             </Button>

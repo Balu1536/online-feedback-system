@@ -23,6 +23,9 @@ export const AdminFacultyManagement = ({ faculty, onReloadData }: AdminFacultyMa
 
   const handleSaveFaculty = async (facultyData: any) => {
     try {
+      // Set admin context for RLS policies
+      await supabase.auth.getUser();
+      
       const { error } = await supabase
         .from('faculty')
         .update({
@@ -45,6 +48,37 @@ export const AdminFacultyManagement = ({ faculty, onReloadData }: AdminFacultyMa
     } catch (error: any) {
       toast({
         title: "Update Failed",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleAddFaculty = async (facultyData: any) => {
+    try {
+      await supabase.auth.getUser();
+      
+      const { error } = await supabase
+        .from('faculty')
+        .insert({
+          faculty_id: facultyData.faculty_id,
+          name: facultyData.name,
+          designation: facultyData.designation,
+          qualification: facultyData.qualification,
+          experience: facultyData.experience
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Faculty Added",
+        description: "New faculty member has been added successfully."
+      });
+
+      onReloadData();
+    } catch (error: any) {
+      toast({
+        title: "Add Failed",
         description: error.message,
         variant: "destructive"
       });
