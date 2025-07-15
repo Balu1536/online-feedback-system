@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# Welcome to Project Online Feedback System 
 by Balasubramanyam Busetty 
 
 ## Project info
